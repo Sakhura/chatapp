@@ -10,5 +10,6 @@ data class MensajeEntity(
     val contenido: String,
     val remitente: String,
     val timestamp: Long,
-    val salaId: String
+    val salaId: String,
+    val estado: String = "ENVIADO"
 )
