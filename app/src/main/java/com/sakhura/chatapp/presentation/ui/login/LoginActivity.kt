@@ -21,12 +21,24 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnLogin.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-            viewModel.login(email, password)
-        }
+        setupClickListeners()
+        observeViewModel()
+    }
 
+    private fun setupClickListeners() {
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+            val password = binding.etPassword.text.toString().trim()
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                viewModel.login(email, password)
+            } else {
+                Toast.makeText(this, "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun observeViewModel() {
         viewModel.loginSuccess.observe(this) { success ->
             if (success) {
                 startActivity(Intent(this, SalasActivity::class.java))

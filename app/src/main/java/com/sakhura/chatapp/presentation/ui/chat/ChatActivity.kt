@@ -22,23 +22,38 @@ class ChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val salaId = intent.getStringExtra("salaId") ?: "1"
+        val salaNombre = intent.getStringExtra("salaNombre") ?: "Chat"
 
+        title = salaNombre
+
+        setupRecyclerView()
+        observeViewModel()
+        setupClickListeners(salaId)
+
+        viewModel.conectarWebSocket(salaId)
+    }
+
+    private fun setupRecyclerView() {
         adapter = MensajeAdapter()
         binding.rvMensajes.layoutManager = LinearLayoutManager(this)
         binding.rvMensajes.adapter = adapter
+    }
 
-        viewModel.mensajes.observe(this) {
-            adapter.submitList(it.toList()) // copia para actualizar
-            binding.rvMensajes.scrollToPosition(it.size - 1)
+    private fun observeViewModel() {
+        viewModel.mensajes.observe(this) { mensajes ->
+            adapter.submitList(mensajes.toList())
+            if (mensajes.isNotEmpty()) {
+                binding.rvMensajes.scrollToPosition(mensajes.size - 1)
+            }
         }
+    }
 
-        viewModel.conectarWebSocket(salaId)
-
+    private fun setupClickListeners(salaId: String) {
         binding.btnEnviar.setOnClickListener {
-            val texto = binding.etMensaje.text.toString()
+            val texto = binding.etMensaje.text.toString().trim()
             if (texto.isNotBlank()) {
                 viewModel.enviarMensaje(texto)
-                binding.etMensaje.text.clear()
+                binding.etMensaje.text?.clear()
             }
         }
     }

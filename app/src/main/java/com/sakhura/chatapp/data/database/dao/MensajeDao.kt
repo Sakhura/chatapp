@@ -1,8 +1,7 @@
 package com.sakhura.chatapp.data.database.dao
 
 import androidx.room.*
-import com.sakhura.chatapp.data.database.MensajeEntity
-
+import com.sakhura.chatapp.data.database.entity.MensajeEntity
 
 @Dao
 interface MensajeDao {
@@ -18,5 +17,4 @@ interface MensajeDao {
 
     @Query("UPDATE mensajes SET estado = :nuevoEstado WHERE timestamp = :timestamp")
     suspend fun actualizarEstadoMensaje(timestamp: Long, nuevoEstado: String)
-
 }
